@@ -1,239 +1,499 @@
 
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-sans); }
-  .game-wrap { padding: 1.5rem 1rem; min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pk:#D4537E;--pk-light:#FBEAF0;--pk-dark:#72243E;
+  --pp:#7F77DD;--pp-light:#EEEDFE;--pp-dark:#3C3489;
+  --rd:#E24B4A;--rd-light:#FCEBEB;
+  --gg:#1D9E75;--gg-light:#E1F5EE;
+}
+body{font-family:var(--font-sans);background:transparent}
+.app{max-width:420px;margin:0 auto;padding:0 0 40px}
 
-  .screen { display: none; }
-  .screen.active { display: block; }
+.modal-overlay{background:rgba(0,0,0,0.55);min-height:600px;display:flex;align-items:center;justify-content:center;border-radius:16px;padding:16px}
+.modal-box{background:var(--color-background-primary);border-radius:20px;border:0.5px solid var(--color-border-secondary);padding:28px 22px;width:100%}
+.modal-logo{text-align:center;margin-bottom:16px}
+.modal-logo .logo-icon{width:64px;height:64px;border-radius:50%;background:var(--pk-light);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.modal-logo h1{font-size:24px;font-weight:500;color:var(--color-text-primary)}
+.modal-logo p{font-size:13px;color:var(--color-text-secondary);margin-top:4px}
+.rules-list{margin:18px 0;display:flex;flex-direction:column;gap:10px}
+.rule-item{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--color-background-secondary);border-radius:10px}
+.rule-num{width:24px;height:24px;border-radius:50%;background:var(--pk-light);color:var(--pk-dark);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.rule-text{font-size:13px;color:var(--color-text-primary);line-height:1.5}
+.age-warn{background:var(--rd-light);border:0.5px solid #F09595;border-radius:10px;padding:10px 12px;font-size:12px;color:#791F1F;text-align:center;margin-bottom:16px}
+.agree-btn{width:100%;padding:16px;border-radius:14px;background:var(--pk);color:white;font-size:16px;font-weight:500;border:none;cursor:pointer;margin-bottom:8px}
+.agree-btn:active{opacity:0.85}
+.decline-btn{width:100%;padding:12px;border-radius:14px;background:transparent;color:var(--color-text-secondary);font-size:14px;border:0.5px solid var(--color-border-secondary);cursor:pointer}
 
-  h1.title { font-size: 26px; font-weight: 500; color: var(--color-text-primary); text-align: center; margin-bottom: 4px; }
-  .subtitle { text-align: center; font-size: 14px; color: var(--color-text-secondary); margin-bottom: 2rem; }
+.screen{display:none}
+.screen.active{display:block}
 
-  .setup-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
-  .setup-card h3 { font-size: 14px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.setup-wrap{padding:20px 16px}
+.setup-header{text-align:center;margin-bottom:24px}
+.setup-header h2{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.setup-header p{font-size:14px;color:var(--color-text-secondary);margin-top:4px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:0.07em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:10px;margin-top:20px}
+.player-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:14px;padding:14px;margin-bottom:10px}
+.player-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.p-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;flex-shrink:0}
+.av-f{background:var(--pk-light);color:var(--pk-dark)}
+.av-m{background:#E6F1FB;color:#0C447C}
+.av-nb{background:var(--pp-light);color:var(--pp-dark)}
+.av-d{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.p-name-input{flex:1;background:transparent;border:none;outline:none;font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.p-name-input::placeholder{color:var(--color-text-tertiary)}
+.del-btn{background:transparent;border:none;cursor:pointer;color:var(--color-text-tertiary);padding:4px;border-radius:6px}
+.del-btn:hover{color:var(--rd);background:var(--rd-light)}
+.gender-row{display:flex;gap:8px}
+.g-pill{flex:1;padding:8px 4px;border-radius:10px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-size:12px;color:var(--color-text-secondary);text-align:center;transition:all 0.12s}
+.g-pill.sel-f{background:var(--pk-light);border-color:var(--pk);color:var(--pk-dark);font-weight:500}
+.g-pill.sel-m{background:#E6F1FB;border-color:#378ADD;color:#0C447C;font-weight:500}
+.g-pill.sel-nb{background:var(--pp-light);border-color:var(--pp);color:var(--pp-dark);font-weight:500}
+.add-player-btn{width:100%;padding:13px;border-radius:14px;background:transparent;border:0.5px dashed var(--color-border-secondary);color:var(--color-text-secondary);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px}
+.add-player-btn:hover{background:var(--color-background-secondary)}
+.play-btn{width:100%;padding:17px;border-radius:16px;background:var(--pk);color:white;font-size:17px;font-weight:500;border:none;cursor:pointer;margin-top:20px}
+.play-btn:disabled{opacity:0.35;cursor:not-allowed}
+.play-btn:not(:disabled):active{opacity:0.85}
 
-  .player-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .player-row input { flex: 1; padding: 8px 12px; font-size: 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); outline: none; }
-  .player-row input:focus { border-color: #7F77DD; }
+.game-wrap{padding:16px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.round-pill{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--color-text-secondary)}
+.settings-btn{background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:10px;padding:8px;cursor:pointer;color:var(--color-text-secondary);display:flex}
+.players-scroll{display:flex;gap:8px;overflow-x:auto;margin-bottom:18px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.players-scroll::-webkit-scrollbar{display:none}
+.p-chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:20px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);white-space:nowrap;transition:all 0.15s;font-size:13px;color:var(--color-text-secondary)}
+.p-chip.cur{border-color:var(--pk);background:var(--pk-light);color:var(--pk-dark);font-weight:500}
+.chip-dot{width:8px;height:8px;border-radius:50%}
+.dot-f{background:var(--pk)}
+.dot-m{background:#378ADD}
+.dot-nb{background:var(--pp)}
+.dot-d{background:var(--color-text-tertiary)}
 
-  .gender-pills { display: flex; gap: 6px; }
-  .gender-pill { padding: 6px 12px; font-size: 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 20px; cursor: pointer; color: var(--color-text-secondary); background: transparent; transition: all 0.15s; }
-  .gender-pill.selected { background: #EEEDFE; border-color: #7F77DD; color: #3C3489; font-weight: 500; }
-  .gender-pill.selected.male { background: #E6F1FB; border-color: #378ADD; color: #0C447C; }
-  .gender-pill.selected.female { background: #FBEAF0; border-color: #D4537E; color: #4B1528; }
-  .gender-pill.selected.nb { background: #E1F5EE; border-color: #1D9E75; color: #04342C; }
+.player-hero{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:18px;padding:20px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.hero-avatar{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;flex-shrink:0}
+.hero-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.hero-sub{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
 
-  .add-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text-secondary); background: transparent; border: 0.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 8px 14px; cursor: pointer; width: 100%; justify-content: center; margin-top: 4px; }
-  .add-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.choice-card{padding:22px 14px;border-radius:16px;cursor:pointer;border:2px solid transparent;text-align:center;transition:all 0.15s;-webkit-tap-highlight-color:transparent}
+.choice-card:active{transform:scale(0.96)}
+.c-truth{background:var(--pp-light);border-color:#AFA9EC}
+.c-truth:hover{border-color:var(--pp)}
+.c-dare{background:var(--pk-light);border-color:#ED93B1}
+.c-dare:hover{border-color:var(--pk)}
+.choice-card .c-icon{font-size:32px;margin-bottom:10px}
+.choice-card .c-title{font-size:17px;font-weight:500}
+.c-truth .c-title{color:var(--pp-dark)}
+.c-dare .c-title{color:var(--pk-dark)}
+.choice-card .c-sub{font-size:12px;margin-top:4px}
+.c-truth .c-sub{color:var(--pp)}
+.c-dare .c-sub{color:var(--pk)}
 
-  .remove-btn { background: transparent; border: none; cursor: pointer; color: var(--color-text-tertiary); padding: 4px; border-radius: 4px; }
-  .remove-btn:hover { color: #E24B4A; background: #FCEBEB; }
+.result-wrap{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:18px;padding:22px;margin-bottom:14px;min-height:130px}
+.result-tag{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.rtag-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.rtag-truth{background:var(--pp-light);color:var(--pp-dark)}
+.rtag-dare{background:var(--pk-light);color:var(--pk-dark)}
+.rtag-num{font-size:12px;color:var(--color-text-tertiary);margin-left:auto}
+.result-q{font-size:18px;line-height:1.55;color:var(--color-text-primary);font-weight:400}
+.next-btn{width:100%;padding:16px;border-radius:14px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary);font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.next-btn:active{opacity:0.7}
+.skip-txt{text-align:center;font-size:13px;color:var(--color-text-tertiary);margin-top:10px;cursor:pointer;padding:6px}
+.skip-txt:hover{color:var(--color-text-secondary)}
 
-  .start-btn { width: 100%; padding: 14px; font-size: 16px; font-weight: 500; background: linear-gradient(135deg, #7F77DD, #D4537E); color: white; border: none; border-radius: var(--border-radius-lg); cursor: pointer; margin-top: 1rem; transition: opacity 0.15s; }
-  .start-btn:hover { opacity: 0.9; }
-  .start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.panel-wrap{padding:16px}
+.panel-header{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.back-btn{background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:10px;padding:8px;cursor:pointer;color:var(--color-text-secondary);display:flex}
+.panel-title{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.panel-tabs{display:flex;gap:8px;margin-bottom:18px}
+.ptab{flex:1;padding:10px;border-radius:10px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-size:14px;color:var(--color-text-secondary);text-align:center}
+.ptab.act{background:var(--pk-light);border-color:var(--pk);color:var(--pk-dark);font-weight:500}
+.q-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;max-height:300px;overflow-y:auto}
+.q-item{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:var(--color-background-secondary);border-radius:10px;font-size:13px;color:var(--color-text-primary);line-height:1.45}
+.q-item .q-del{background:transparent;border:none;cursor:pointer;color:var(--color-text-tertiary);flex-shrink:0;padding:2px;border-radius:4px;font-size:14px;line-height:1}
+.q-item .q-del:hover{color:var(--rd)}
+.q-badge{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;flex-shrink:0;margin-top:2px}
+.q-badge-t{background:var(--pp-light);color:var(--pp-dark)}
+.q-badge-d{background:var(--pk-light);color:var(--pk-dark)}
+.q-badge-c{background:var(--gg-light);color:#04342C}
+.add-q-area{background:var(--color-background-secondary);border-radius:14px;padding:14px}
+.add-q-area textarea{width:100%;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--color-text-primary);font-family:var(--font-sans);resize:none;outline:none;min-height:80px}
+.add-q-area textarea:focus{border-color:var(--pk)}
+.add-q-type{display:flex;gap:8px;margin:10px 0}
+.type-opt{flex:1;padding:9px;border-radius:10px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-size:13px;color:var(--color-text-secondary);text-align:center}
+.type-opt.sel-t{background:var(--pp-light);border-color:var(--pp);color:var(--pp-dark);font-weight:500}
+.type-opt.sel-d{background:var(--pk-light);border-color:var(--pk);color:var(--pk-dark);font-weight:500}
+.save-q-btn{width:100%;padding:12px;border-radius:10px;background:var(--pk);color:white;border:none;cursor:pointer;font-size:14px;font-weight:500}
+.save-q-btn:active{opacity:0.8}
 
-  .turn-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; padding: 1rem 1.25rem; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); }
-  .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 500; flex-shrink: 0; }
-  .avatar.male { background: #E6F1FB; color: #0C447C; }
-  .avatar.female { background: #FBEAF0; color: #72243E; }
-  .avatar.nb { background: #E1F5EE; color: #04342C; }
-  .avatar.default { background: #EEEDFE; color: #3C3489; }
-  .turn-info { flex: 1; }
-  .turn-name { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
-  .turn-label { font-size: 13px; color: var(--color-text-secondary); }
-  .round-badge { font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 20px; padding: 4px 12px; }
+.end-wrap{padding:32px 20px;text-align:center}
+.end-icon{width:80px;height:80px;border-radius:50%;background:var(--pk-light);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.end-wrap h2{font-size:24px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
+.end-wrap p{font-size:15px;color:var(--color-text-secondary);margin-bottom:28px}
+.end-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+.estat{background:var(--color-background-secondary);border-radius:12px;padding:14px;text-align:center}
+.estat .ev{font-size:26px;font-weight:500;color:var(--color-text-primary)}
+.estat .el{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
+.replay-btn{width:100%;padding:16px;border-radius:14px;background:var(--pk);color:white;font-size:16px;font-weight:500;border:none;cursor:pointer;margin-bottom:10px}
+.new-btn{width:100%;padding:14px;border-radius:14px;background:transparent;border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary);font-size:15px;cursor:pointer}
 
-  .choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
-  .choice-btn { padding: 1.25rem; border-radius: var(--border-radius-lg); cursor: pointer; border: 2px solid transparent; text-align: center; transition: all 0.15s; }
-  .choice-btn:active { transform: scale(0.98); }
-  .choice-truth { background: #EEEDFE; border-color: #AFA9EC; }
-  .choice-truth:hover { border-color: #7F77DD; }
-  .choice-dare { background: #FBEAF0; border-color: #ED93B1; }
-  .choice-dare:hover { border-color: #D4537E; }
-  .choice-icon { font-size: 28px; margin-bottom: 8px; }
-  .choice-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
-  .choice-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
-
-  .result-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.5rem; margin-bottom: 1rem; min-height: 140px; display: none; }
-  .result-card.visible { display: block; }
-  .result-type { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px; }
-  .result-type.truth { color: #534AB7; }
-  .result-type.dare { color: #993556; }
-  .result-number { font-size: 11px; color: var(--color-text-tertiary); margin-left: auto; }
-  .result-text { font-size: 17px; line-height: 1.55; color: var(--color-text-primary); }
-
-  .next-btn { width: 100%; padding: 12px; font-size: 15px; font-weight: 500; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); cursor: pointer; color: var(--color-text-primary); display: none; }
-  .next-btn.visible { display: block; }
-  .next-btn:hover { background: var(--color-background-primary); }
-
-  .players-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
-  .player-chip { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 20px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); transition: all 0.2s; }
-  .player-chip.active { border-color: #7F77DD; background: #EEEDFE; font-weight: 500; color: #3C3489; }
-  .player-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .dot-male { background: #378ADD; }
-  .dot-female { background: #D4537E; }
-  .dot-nb { background: #1D9E75; }
-  .dot-default { background: #7F77DD; }
-
-  .skip-link { display: block; text-align: center; font-size: 13px; color: var(--color-text-tertiary); margin-top: 0.75rem; cursor: pointer; }
-  .skip-link:hover { color: var(--color-text-secondary); }
-
-  .end-screen { text-align: center; padding: 2rem 1rem; }
-  .end-screen .big-icon { font-size: 48px; margin-bottom: 1rem; }
-  .end-screen h2 { font-size: 22px; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-text-primary); }
-  .end-screen p { color: var(--color-text-secondary); margin-bottom: 1.5rem; }
-  .restart-btn { padding: 12px 28px; font-size: 15px; font-weight: 500; background: transparent; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); cursor: pointer; color: var(--color-text-primary); }
-  .restart-btn:hover { background: var(--color-background-secondary); }
-
-  .spin-anim { animation: spinIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-  @keyframes spinIn { from { opacity: 0; transform: scale(0.85) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes popIn{from{opacity:0;transform:scale(0.88) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.pop{animation:popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275)}
 </style>
 
-<div class="game-wrap">
-  <h2 class="sr-only">Truth or Dare party game for couples and groups</h2>
+<h2 class="sr-only">Adults-only couples truth or dare game with 100 rounds and custom questions</h2>
 
-  <!-- SETUP SCREEN -->
-  <div class="screen active" id="screen-setup">
-    <h1 class="title">Truth or Dare</h1>
-    <p class="subtitle">Add your players, then spin the bottle</p>
+<div class="app" id="app">
 
-    <div class="setup-card">
-      <h3>Players</h3>
-      <div id="players-list"></div>
-      <button class="add-btn" onclick="addPlayer()"><i class="ti ti-plus" aria-hidden="true"></i> Add player</button>
-    </div>
-
-    <button class="start-btn" id="start-btn" onclick="startGame()">Let's Play</button>
-  </div>
-
-  <!-- GAME SCREEN -->
-  <div class="screen" id="screen-game">
-    <div class="players-strip" id="players-strip"></div>
-
-    <div class="turn-header" id="turn-header">
-      <div class="avatar" id="player-avatar"></div>
-      <div class="turn-info">
-        <div class="turn-name" id="player-name"></div>
-        <div class="turn-label">choose your fate</div>
+<div id="modal-screen" style="display:block">
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-logo">
+        <div class="logo-icon"><i class="ti ti-heart" style="font-size:28px;color:#D4537E" aria-hidden="true"></i></div>
+        <h1>Truth or Dare</h1>
+        <p>The couples edition — no limits</p>
       </div>
-      <div class="round-badge" id="round-badge">Round 1</div>
-    </div>
-
-    <div class="choice-row" id="choice-row">
-      <div class="choice-btn choice-truth" onclick="pick('truth')">
-        <div class="choice-icon"><i class="ti ti-message-circle-question" style="font-size:28px;color:#534AB7" aria-hidden="true"></i></div>
-        <div class="choice-title" style="color:#3C3489">Truth</div>
-        <div class="choice-sub">Answer honestly</div>
+      <div class="age-warn"><i class="ti ti-alert-triangle" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i> This game contains explicit adult content. You must be 18+ to play.</div>
+      <div class="rules-list">
+        <div class="rule-item"><div class="rule-num">1</div><div class="rule-text">This is a safe space — always respect each other's boundaries. A "no" is always valid.</div></div>
+        <div class="rule-item"><div class="rule-num">2</div><div class="rule-text">What happens in the game stays between you two. No screenshots, no sharing.</div></div>
+        <div class="rule-item"><div class="rule-num">3</div><div class="rule-text">You can skip any truth or dare, no questions asked. Skipping 3 in a row = a shot or a penalty agreed before the game.</div></div>
+        <div class="rule-item"><div class="rule-num">4</div><div class="rule-text">Truths must be answered honestly. Lying = automatic dare on top.</div></div>
+        <div class="rule-item"><div class="rule-num">5</div><div class="rule-text">This game is for consenting adults only. Play responsibly and have fun.</div></div>
       </div>
-      <div class="choice-btn choice-dare" onclick="pick('dare')">
-        <div class="choice-icon"><i class="ti ti-flame" style="font-size:28px;color:#993556" aria-hidden="true"></i></div>
-        <div class="choice-title" style="color:#72243E">Dare</div>
-        <div class="choice-sub">Do it or skip</div>
-      </div>
-    </div>
-
-    <div class="result-card" id="result-card">
-      <div class="result-type" id="result-type">
-        <i class="ti ti-message-circle-question" aria-hidden="true"></i>
-        <span>Truth</span>
-        <span class="result-number" id="result-number">#1</span>
-      </div>
-      <div class="result-text" id="result-text"></div>
-    </div>
-
-    <button class="next-btn" id="next-btn" onclick="nextTurn()">Next player <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-    <span class="skip-link" id="skip-link" onclick="nextTurn()" style="display:none">Skip & pass</span>
-  </div>
-
-  <!-- END SCREEN -->
-  <div class="screen" id="screen-end">
-    <div class="end-screen">
-      <div class="big-icon"><i class="ti ti-confetti" style="font-size:52px;color:#7F77DD" aria-hidden="true"></i></div>
-      <h2>That's a wrap!</h2>
-      <p>Hope things got interesting in there...</p>
-      <button class="restart-btn" onclick="restartGame()"><i class="ti ti-refresh" aria-hidden="true"></i> Play again</button>
+      <button class="agree-btn" onclick="agreeRules()"><i class="ti ti-check" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> I agree — let's play</button>
+      <button class="decline-btn" onclick="declineRules()">Not tonight</button>
     </div>
   </div>
 </div>
 
-<script>
-const TRUTHS = ["What's the one thing I do that instantly turns you on?","What body part of mine do you find most attractive?","What's your biggest sexual fantasy involving us?","What's something you've always wanted to try in bed but haven't asked for?","What's the most turned on you've ever been by something I did?","What's your favorite thing we've done intimately so far?","What time of day are you most in the mood?","What setting or location would you find most exciting for intimacy?","What's one thing I could wear that would drive you absolutely crazy?","What's your favorite part of foreplay?","Have you ever thought about me during the day in a naughty way?","What's the boldest thing you've ever wanted to do to me?","Have you ever been so attracted to me you had to stop yourself from doing something?","What's something about me physically that you can't stop thinking about?","What's the naughtiest dream you've ever had about me?","Have you ever sent me a flirty text hoping it would lead somewhere?","What's one thing you'd do to me if you had total confidence I'd love it?","Have you ever been turned on by something unexpected I did?","What's the most daring place you'd want to be intimate with me?","Have you ever fantasized about me when we weren't together?","What makes you feel most desired by me?","What's something I do outside the bedroom that you find surprisingly sexy?","What does the perfect intimate evening with me look like to you?","What's one thing that would make our intimate life even better?","When do you feel the most connected to me physically?","What's your favorite way to be touched?","What's something you wish I knew about what you like?","How do you prefer I initiate intimacy?","What's one boundary you'd like us to talk openly about?","What's your love language in the bedroom?","If we could try one new thing tonight, what would you pick?","If you could describe our ideal intimate encounter, what would it look like?","If you had to pick one room in the house other than the bedroom, which would it be?","If I surprised you with a romantic setup, what would excite you most?","If you could plan our most adventurous date ever, what would it be?","If you had to rate our chemistry out of 10, what would you give and why?","If you could change one thing about how we are intimate, what would it be?","If I asked you to describe our best intimate moment, which would you pick?","What's one thing you'd want to experience together before the year ends?","What makes you feel safe enough to be vulnerable with me?","Is there anything you've held back from telling me about your desires?","What does it feel like when we're truly connected?","Has our intimacy changed how you feel about me overall?","What's one thing I do that makes you feel deeply loved?","What's one insecurity you have that I could help you feel better about?","Do you feel like you can always tell me what you want? Why or why not?","What's one conversation about intimacy you think we should have more?","When do you feel most attractive around me?","What's the most romantic thing you've ever imagined us doing together?","What's a part of your body you'd love for me to pay more attention to?","What's the most spontaneous intimate thing you've ever done?","What's one 'innocent' thing I do that secretly drives you wild?","What's the naughtiest thought you've had about me this week?","If you had to describe our physical connection in one word, what would it be?","What's a song that gets you in the mood every time?","What's one thing I could whisper to you that would melt you instantly?","What's something I could do right now to make you feel incredibly wanted?","What's a scent, texture, or sensation you find irresistible?","What's your favorite part of the buildup before intimacy?","Have you ever wanted to take charge more than you usually do?","Is there a fantasy you've been too shy to bring up?","What's something adventurous you'd want to try just once?","Have you ever been curious about something specific but didn't ask?","What's the one thing that would make tonight unforgettable?","Is there a part of your body you'd love for me to explore more?","What word or phrase from me drives you the most wild?","What's the most seductive thing I've ever done without knowing it?","What's something you love about being intimate specifically with me?","What's a skill of mine you find unexpectedly attractive?","What's the most romantic text I've ever sent you?","What's your favorite memory of us being spontaneous together?","What's something about our relationship that you brag about to friends?","What's the sweetest thing I've ever done completely unprompted?","What quality of mine do you think makes us work so well together?","When do you feel the most proud to be with me?","What's one thing about us that you never want to change?","What do you think makes our bond genuinely unique?","What do you think about when you want to feel close to me?","What's the most attractive version of me — what am I wearing and doing?","Is there anywhere on your body you've been waiting for me to explore?","What's one thing you want more of from me, physically?","What's the most irresistible version of me you've ever seen?","What's your go-to memory of us when you want to feel happy?","What makes you feel sexy when you're around me?","What's one physical compliment you've been wanting to give me?","What's a touch or gesture from me that always gives you chills?","Have you ever wanted me to be more dominant or more gentle?","What's one way I could make you feel more desired?","What lights you up most — words, touch, or actions?","Is there something we've done once that you'd love to repeat?","What's your favorite way for us to wind down together after a long day?","What makes you feel like the luckiest person in the relationship?","What's one intimate goal you have for us as a couple?","What's the most attractive thing about my confidence?","What do I do that makes you feel completely safe and desired at the same time?","If tonight could go any way you wanted, what would happen?"];
+<div class="screen" id="screen-setup">
+  <div class="setup-wrap">
+    <div class="setup-header">
+      <h2>Who's playing?</h2>
+      <p>Add players and choose their vibe</p>
+    </div>
+    <div class="section-label">Players (min 2)</div>
+    <div id="players-list"></div>
+    <button class="add-player-btn" onclick="addPlayer()"><i class="ti ti-plus" style="font-size:16px" aria-hidden="true"></i> Add another player</button>
+    <button class="play-btn" id="play-btn" onclick="startGame()" disabled><i class="ti ti-player-play" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Start the game</button>
+  </div>
+</div>
 
-const DARES = ["Lick your partner's ear slowly for 1 minute.","Give your partner a 3-minute neck and shoulder massage using only your lips and hands.","Trace the outline of your partner's face with your fingertips with your eyes closed.","Whisper the most seductive thing you can think of into their ear.","Kiss your partner's hand slowly, working your way up to their wrist.","Blow softly on the back of your partner's neck for 30 seconds.","Trace your name on your partner's back with your finger and let them guess.","Run your fingers through your partner's hair for 2 minutes.","Kiss your partner's shoulder and collarbone for 1 minute.","Hold your partner's face in your hands and stare into their eyes for 1 full minute without speaking.","Remove one item of clothing chosen by your partner.","Let your partner blindfold you and guess what they're touching you with.","Let your partner pick your outfit for the rest of the game.","Let your partner trace any shape they want on your bare back.","Take off your shirt and let your partner draw a small symbol on your back.","Let your partner choose one item of yours to keep until the game ends.","Change into the least clothing you're okay with and stay that way for 5 rounds.","Let your partner roll up your sleeve and kiss the inside of your arm slowly.","Wear only a blanket for the next 3 rounds.","Let your partner slowly remove one item of clothing of their choosing from your body.","Tickle your partner anywhere on their body for 1 minute — they can't stop you.","Give your partner a full back scratch for 2 minutes exactly how they like it.","Massage your partner's feet for 3 minutes without stopping.","Let your partner trace every feature of your face with their fingertip.","Give your partner a scalp massage for 2 minutes.","Hold your partner's hand and trace each of their fingers slowly.","Let your partner rest their head in your lap while you play with their hair.","Scratch your partner's back lightly for 2 minutes however they direct you.","Rub your partner's temples gently for 2 minutes.","Let your partner hold your face and give you one long, slow kiss anywhere they choose.","Give your partner the slowest, most deliberate kiss you possibly can.","Kiss your partner on the forehead, both cheeks, nose, and finally lips — take your time.","Kiss the back of your partner's neck for 1 minute.","Give your partner a kiss on every finger of one hand.","Kiss your partner from their shoulder up to their ear on one side.","Give your partner a kiss that lasts at least 30 seconds.","Kiss your partner's inner wrist and look up at them afterward.","Give your partner three different types of kisses: soft, firm, and playful.","Let your partner guide your face to wherever they want to be kissed.","Recreate your first kiss as accurately as possible.","Give your partner a lap sit and hold them for the next 2 rounds.","Let your partner whisper a dare that you must do for 1 minute — they choose.","Sit facing your partner, foreheads touching, for 1 full minute in silence.","Let your partner blindfold you for 2 minutes — they can touch your face and hands only.","Sit in your partner's lap and describe what you find most attractive about them for 2 minutes.","Let your partner be completely in charge for the next 10 minutes of the game.","Spend 2 minutes just holding your partner with no phones, no talking.","Give your partner oral attention — kissing and licking — on their neck and collarbone for 2 minutes.","Give your partner a sensual body massage for 5 minutes — they direct everything.","Give your partner head for 2 minutes.","Let your partner choose one part of your body to kiss for 1 minute.","Spend 3 minutes doing whatever your partner asks within your comfort zone.","Give your partner a kiss starting at the back of their knee going upward — stop where they say.","Lie still and let your partner give you a full 5-minute body massage.","Give your partner a full 3-minute kiss — long, slow, and intentional.","Let your partner slowly run their hands all over your back for 2 minutes.","Let your partner direct a full 5-minute intimate massage however they want.","Do a seductive walk across the room while your partner watches.","Dance for your partner for 1 full song — make it count.","Do your best impression of how your partner acts when they're turned on.","Describe in detail what you want to do to your partner tonight.","Talk in the most seductive voice you can for the next 3 rounds.","Whisper something you've never said out loud before into your partner's ear.","Tell your partner exactly where and how you want to be touched right now.","Describe your partner's best physical feature out loud for 1 minute straight.","Read your partner a sensual poem — written on the spot, at least 4 lines.","Give your partner your best slow, cinematic movie-style hug from behind and hold it.","Tell your partner three things you find irresistibly attractive about them — face to face.","Look your partner in the eyes and say exactly what you're feeling right now.","Hold your partner's gaze while describing your favorite memory of being intimate.","Tell your partner one thing you've always wanted them to do to you.","Look into your partner's eyes and finish this sentence: 'The thing I love most about being yours is…'","Tell your partner what you were thinking the last time you looked at them and smiled.","Describe to your partner what their touch feels like using only metaphors.","Say three things you've been wanting to compliment your partner on.","Tell your partner what makes them uniquely irreplaceable to you.","Say what you love most about the way they make you feel — no laughing allowed.","Let your partner give you a makeover for 5 minutes.","Let your partner take a photo of you to keep.","Act out how you'd propose if you had to do it right now.","Tell your partner you love them in three different ways — words, touch, and action.","Let your partner teach you one way they like to be touched.","Let your partner lead you through a slow dance, eyes closed, no music.","Undress your partner down to whatever they're comfortable with — slowly and intentionally.","Do something physically affectionate that you've never done before.","Let your partner lead the next intimate moment entirely — no input from you.","Kiss your partner in their favorite spot for a full minute.","Tell your partner one thing you want to do to them later tonight.","Let your partner pick one place on your body for them to kiss for 2 full minutes.","Spend 5 uninterrupted minutes being completely physically present with your partner.","Ask your partner what they need most from you right now — and do it.","Give your partner a full back massage using warm hands for 5 minutes.","Let your partner whisper instructions in your ear for 2 minutes that you must follow.","Kiss your partner from their forehead down to their chin, taking your time at each stop.","Let your partner sit between your legs and lean back while you hold them for 3 minutes.","Spend 3 minutes telling your partner every single thing you love about their body.","End the game with a kiss that says everything you couldn't put into words."];
+<div class="screen" id="screen-game">
+  <div class="game-wrap">
+    <div class="top-bar">
+      <div class="round-pill" id="round-pill">Round 1 of 100</div>
+      <button class="settings-btn" onclick="showPanel()" aria-label="Manage questions"><i class="ti ti-adjustments-horizontal" style="font-size:18px" aria-hidden="true"></i></button>
+    </div>
+    <div class="players-scroll" id="players-scroll"></div>
+    <div class="player-hero" id="player-hero">
+      <div class="hero-avatar" id="hero-av"></div>
+      <div>
+        <div class="hero-name" id="hero-name"></div>
+        <div class="hero-sub">your turn — pick your fate</div>
+      </div>
+    </div>
+    <div class="choice-grid" id="choice-grid">
+      <div class="choice-card c-truth" onclick="pick('truth')">
+        <div class="c-icon"><i class="ti ti-message-circle-question" style="font-size:34px;color:#534AB7" aria-hidden="true"></i></div>
+        <div class="c-title">Truth</div>
+        <div class="c-sub">confess it all</div>
+      </div>
+      <div class="choice-card c-dare" onclick="pick('dare')">
+        <div class="c-icon"><i class="ti ti-flame" style="font-size:34px;color:#D4537E" aria-hidden="true"></i></div>
+        <div class="c-title">Dare</div>
+        <div class="c-sub">do the thing</div>
+      </div>
+    </div>
+    <div id="result-wrap" style="display:none" class="result-wrap pop">
+      <div class="result-tag">
+        <div class="rtag-pill" id="rtag"></div>
+        <div class="rtag-num" id="rtag-num"></div>
+      </div>
+      <div class="result-q" id="result-q"></div>
+    </div>
+    <button class="next-btn" id="next-btn" style="display:none" onclick="nextTurn()">Next player <i class="ti ti-arrow-right" style="font-size:16px" aria-hidden="true"></i></button>
+    <div class="skip-txt" id="skip-txt" style="display:none" onclick="nextTurn()">Skip this one</div>
+  </div>
+</div>
+
+<div class="screen" id="screen-panel">
+  <div class="panel-wrap">
+    <div class="panel-header">
+      <button class="back-btn" onclick="hidePanel()" aria-label="Back to game"><i class="ti ti-arrow-left" style="font-size:18px" aria-hidden="true"></i></button>
+      <div class="panel-title">Question bank</div>
+    </div>
+    <div class="panel-tabs">
+      <button class="ptab act" id="ptab-all" onclick="setTab('all')">All</button>
+      <button class="ptab" id="ptab-truth" onclick="setTab('truth')">Truths</button>
+      <button class="ptab" id="ptab-dare" onclick="setTab('dare')">Dares</button>
+      <button class="ptab" id="ptab-custom" onclick="setTab('custom')">Custom</button>
+    </div>
+    <div class="q-list" id="q-list"></div>
+    <div class="add-q-area">
+      <div style="font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px">Add your own question</div>
+      <textarea id="new-q-text" placeholder="Write your question or dare here..."></textarea>
+      <div class="add-q-type">
+        <button class="type-opt" id="type-truth" onclick="selectType('truth')"><i class="ti ti-message-circle-question" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Truth</button>
+        <button class="type-opt" id="type-dare" onclick="selectType('dare')"><i class="ti ti-flame" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Dare</button>
+      </div>
+      <button class="save-q-btn" onclick="saveCustomQ()"><i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i> Save question</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-end">
+  <div class="end-wrap">
+    <div class="end-icon"><i class="ti ti-heart" style="font-size:36px;color:#D4537E" aria-hidden="true"></i></div>
+    <h2>That was wild.</h2>
+    <p>100 rounds done. Hope things got very heated in there...</p>
+    <div class="end-stats">
+      <div class="estat"><div class="ev" id="stat-truths">0</div><div class="el">truths answered</div></div>
+      <div class="estat"><div class="ev" id="stat-dares">0</div><div class="el">dares completed</div></div>
+      <div class="estat"><div class="ev" id="stat-skips">0</div><div class="el">skipped</div></div>
+      <div class="estat"><div class="ev" id="stat-rounds">100</div><div class="el">rounds played</div></div>
+    </div>
+    <button class="replay-btn" onclick="replayGame()"><i class="ti ti-refresh" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Play again</button>
+    <button class="new-btn" onclick="newGame()">New players</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const TRUTHS_BASE = [
+"What's the one thing I do that instantly turns you on?",
+"What body part of mine do you find the most irresistible?",
+"What's your biggest sexual fantasy involving us that we haven't done yet?",
+"What's something you've always wanted to try in bed but were too shy to ask?",
+"What's the dirtiest thought you've had about me this week?",
+"What's the most turned on you've ever been watching me do something totally normal?",
+"What's your favorite position and why does it drive you crazy?",
+"Where on my body do you wish I'd spend more time?",
+"What's the naughtiest dream you've ever had about me?",
+"Have you ever touched yourself thinking about me?",
+"What's one place on your body you're dying for me to explore more?",
+"What's the boldest thing you've ever wanted to do to me but held back?",
+"What outfit on me would make you lose all self-control?",
+"What's the dirtiest text you've ever wanted to send me but didn't?",
+"What's one thing you want me to do to you tonight that I've never done before?",
+"What's your ultimate seduction move and what makes it so effective?",
+"What's the most arousing thing I've said to you?",
+"Have you ever been turned on by a completely unexpected thing I did?",
+"What's the kinkiest thing you'd be willing to try if I asked nicely?",
+"What's the most daring place you'd want us to be intimate?",
+"Describe in detail what you'd want me to do to you right now if you could script it.",
+"What part of my body makes you want to bite it?",
+"What's the most intense orgasm you've ever had and what caused it?",
+"What's something about our sex life you'd change to make it 10x hotter?",
+"Would you rather be dominated or dominate me — and how?",
+"What's one role play scenario that secretly turns you on?",
+"Have you ever fantasized about watching me with someone else or being watched?",
+"What does my touch feel like when you're most aroused — describe it in detail.",
+"What's your favorite memory of us being intimate and why does it stand out?",
+"What's the longest you've been turned on by me without acting on it?",
+"What's one thing I do during intimacy that you wish lasted way longer?",
+"Have you ever wanted to film us together?",
+"What would you do to me if I gave you complete control for one hour?",
+"What's a body part you have that you'd love me to worship more?",
+"What's the most creative place in this house you've fantasized about us together?",
+"What lingerie or underwear on me would make you absolutely lose it?",
+"What's one bedroom secret you've never told anyone — not even me?",
+"What makes you feel the most sexually powerful?",
+"What fantasy have you googled that you'd love us to try?",
+"What's the one word that describes what you want me to do to you tonight?",
+"What's the most sensual thing you've ever experienced?",
+"What physical feature of mine genuinely drives you wild every single time?",
+"Have you ever been so turned on in public because of me that it was uncomfortable?",
+"What's something about your body that you love being complimented on?",
+"What's one thing you want to try that society says is naughty but you find thrilling?",
+"What's your favorite foreplay activity and how long could you do it?",
+"Would you ever let me blindfold you and take complete control?",
+"What's the dirtiest scenario you've imagined us in that you've never told me?",
+"How would you describe what it feels like physically when I touch you just right?",
+"What makes you feel the most desired and wanted by me?",
+"If you could have me any way tonight — no limits — what would happen?",
+"What's one thing about our intimate life that you'd brag about to your best friend?",
+"What's a move I made once that you still think about?",
+"What whispered word or phrase from me sends shivers down your spine?",
+"What's the rawest, most vulnerable emotion you feel during intimacy with me?",
+"What physical thing about me changes when you know I want you?",
+"Do you prefer when I'm gentle and slow or rough and intense — and when?",
+"What's something you wish I'd demand from you more often?",
+"What's a sound I make that turns you on instantly?",
+"If tonight had no rules and no consequences — what would you do to me?",
+"What's one thing about your body you want me to appreciate more?",
+"What time of day are you the most in the mood and what do you fantasize about then?",
+"What does it feel like right before you climax — describe every sensation?",
+"What's the most intimate thing we've done that made you fall deeper for me?",
+"What's a location outside the house you'd love to try something risky with me?",
+"Have you ever wanted to use a prop or toy and been nervous to ask?",
+"What's the sexiest accent, outfit, or persona you'd want me to try?",
+"What's the longest you'd want a single intimate session to go on?",
+"What's your biggest turn-off that I should never do?",
+"What does your ideal afterglow look like — what do you need from me?",
+"What's something you love about the way my body feels against yours?",
+"What's one compliment about your body you've been wanting to hear from me?",
+"Have you ever faked being asleep to avoid or invite intimacy?",
+"What's the most you've ever risked or been daring for me?",
+"What's one thing that would make you feel utterly worshipped by me tonight?",
+"If I could do anything to you right now with zero holding back — what would you choose?",
+"What's one thing about our intimacy that genuinely no one else could give you?",
+"What's the most turned on you've ever been just from my voice?",
+"What have I done that surprised you the most in bed?",
+"Describe your perfect makeout session with me in complete detail.",
+"What's one dirty compliment you've wanted to give me but held back?",
+"Is there a position you've been too shy to ask for? Describe it.",
+"What's the most adventurous thing you'd do to me if we had a whole private day?",
+"What is it about our chemistry that makes intimacy with me different from anyone else?",
+"What's the one place I haven't kissed you that you desperately want me to?",
+"What's something about our sex life you love so much you hope it never changes?",
+"What do you think about when you close your eyes during our best moments?",
+"What's one request you've been building the courage to make for months?",
+"How do you want to be touched right now — show me or describe it in full detail.",
+"What's the wildest spontaneous intimate moment you'd love for us to recreate?",
+"What turns you on more — watching me get dressed or watching me undress?",
+"What's one thing you've always wanted to say to me during intimacy but never have?",
+"If I sent you a risky text right now — what would you want it to say?",
+"What's one fantasy you have that starts completely innocently but ends very hot?",
+"What's one thing you secretly love that people might judge you for wanting?",
+"What's your favorite texture, scent, or sensation during intimacy?",
+"What do I look like when I'm most attractive to you — in that exact moment?",
+"What's one act of mine that made you realize I knew exactly what I was doing?",
+"If you could give me detailed instructions for tonight — what would step one be?"
+];
+
+const DARES_BASE = [
+"Give your partner the slowest, most deliberate 60-second kiss of their life.",
+"Trace every curve of your partner's face with your fingertip — eyes closed.",
+"Whisper the dirtiest thing you want to do to them tonight in complete detail.",
+"Lick a slow trail from your partner's collarbone all the way to their ear.",
+"Give your partner a full 5-minute sensual body massage — wherever they direct you.",
+"Kiss and lick your partner's neck for 2 solid minutes without stopping.",
+"Take off your partner's shirt with your teeth — no hands allowed.",
+"Undress your partner down to whatever they're comfortable with — very slowly.",
+"Give your partner a lap dance for one full song — make it count.",
+"Twerk on your partner for 2 minutes straight — they're not allowed to touch.",
+"Blindfold your partner and run your hands anywhere on their body for 3 minutes.",
+"Let your partner blindfold you and do whatever they want for 4 minutes.",
+"Give your partner oral attention — full tongue — on their neck and chest for 3 minutes.",
+"Go down on your partner for 5 full minutes. They control the timer.",
+"Lick your partner in their most sensitive spot for 3 minutes without stopping.",
+"Spank your partner exactly 5 times — they choose the intensity.",
+"Let your partner spank you however many times they decide.",
+"Give your partner a full body kiss — lips to every part they expose — top to bottom.",
+"Bite your partner's lip gently, then their neck, then their shoulder. Take your time.",
+"Let your partner sit on your face for 2 minutes.",
+"Grind on your partner slowly for one full song, face to face.",
+"Make out with your partner as intensely as you can for 3 minutes — no stopping.",
+"Kiss every inch of your partner's inner thighs for 2 minutes.",
+"Let your partner tie your hands behind your back and tease you for 3 minutes.",
+"Give your partner a hickey exactly where they want one — no negotiating.",
+"Strip down to your underwear and give your partner a full 5-minute show.",
+"Let your partner take a seductive photo of you in any pose they choose.",
+"Do your best impression of your partner when they're about to climax.",
+"Describe out loud in graphic detail exactly what you want to do to your partner tonight.",
+"Use only your mouth to take off one item of your partner's clothing.",
+"Suck on your partner's fingers one by one, slowly, making eye contact.",
+"Let your partner run an ice cube anywhere on your body for 2 minutes.",
+"Pour something sweet on your partner's body and lick it off slowly.",
+"Give your partner a full strip tease — at least 3 items removed, slowly.",
+"Lick your partner's ear and whisper exactly what you'd do to them if no one was watching.",
+"Kiss your partner from their belly button down — stop where they say to.",
+"Massage your partner's inner thighs for 3 minutes. Hands only.",
+"Let your partner direct your hands exactly where they want them for 5 minutes.",
+"Get on top of your partner and move slowly for 2 minutes — clothes on.",
+"Give your partner full-body goosebumps using only your breath.",
+"Recreate the best sex you've ever had — just the opening scene.",
+"Do the most seductive walk you can across the room while your partner watches and rates you.",
+"Moan your partner's name and tell them one thing you love about their body.",
+"Rub your partner's body with warm hands for 5 minutes wherever they want.",
+"Let your partner use their mouth anywhere on your body for 3 minutes.",
+"Sit in your partner's lap, face to face, and maintain eye contact for 2 minutes while moving gently.",
+"Tell your partner exactly where and how you want to be touched — using their hand to show.",
+"Make your partner feel completely worshipped from head to toe using only your lips.",
+"Let your partner edge you for 5 minutes — they control everything.",
+"Whisper the rawest, most honest sexual desire you have into their ear.",
+"Act out your favorite fantasy in real time — no script, just go.",
+"Let your partner choose one place on your body to kiss for a full 5 minutes.",
+"Do 2 minutes of the most sensual dancing you know — partner sits and watches.",
+"Take off your own clothes as slowly as possible — partner times you for at least 2 minutes.",
+"Let your partner kiss you for 90 seconds — you aren't allowed to kiss back.",
+"Say the single most explicit thing you've ever thought about your partner out loud.",
+"Kiss your partner everywhere from their knee up to their hip — take your time.",
+"Let your partner draw on your body with their fingertip and guess what they're writing.",
+"Moan something specific — your partner writes the script.",
+"Give your partner a slow, wet kiss on the back of their neck lasting 1 minute.",
+"Put your partner's hand exactly where you want it and leave it there for 3 minutes.",
+"Let your partner choose any dare from the list and double the time on it.",
+"Hold your partner from behind and whisper 5 specific things you love about their body.",
+"Massage your partner's scalp and neck for 5 minutes — make them melt.",
+"Use only your teeth to pull down one item of clothing off your partner.",
+"Let your partner sit between your legs, lean back, and hold them for 5 minutes while you explore.",
+"Recreate your first time making out — but make it 10x hotter.",
+"Tell your partner one thing you've never admitted wanting during intimacy.",
+"Give your partner a full 3-minute kiss — slow, deep, and completely intentional.",
+"Run your tongue along your partner's spine from bottom to top.",
+"Scratch your partner's back lightly for 2 minutes then harder for 1 minute.",
+"Whisper something in your partner's ear that guarantees they'll want you later.",
+"Look into your partner's eyes and slowly describe what you plan to do to them tonight.",
+"Let your partner use their tongue on your most ticklish spot for 1 minute.",
+"Perform a 2-minute spoken-word piece about your partner's body — make it explicit.",
+"Let your partner choose where your hands go for the next 10 minutes of the game.",
+"Do the single most seductive thing you know — no explanation, just do it.",
+"Give your partner 10 kisses in 10 completely different places on their body.",
+"Straddle your partner and stay there for the rest of this round.",
+"Tell your partner the most explicit dream you've had about them — every detail.",
+"Let your partner do anything to you for 5 minutes that you'd normally ask them to stop.",
+"Make your partner feel like the sexiest person alive using only words for 3 minutes.",
+"Use only your lips and tongue on your partner's hand and wrist for 2 minutes.",
+"Give your partner the most passionate hug-from-behind they've ever felt — hold for 3 minutes.",
+"Take a seductive selfie with your partner — most sensual wins.",
+"Demonstrate on your partner exactly how you like to be kissed.",
+"Act out what you'd do if you caught your partner undressing.",
+"Put your lips on your partner's ear and breathe for 1 minute — no words.",
+"End this turn by doing the one thing you know will make your partner want more."
+];
 
 let players = [];
 let currentIdx = 0;
 let round = 1;
-let usedTruths = new Set();
-let usedDares = new Set();
-let playerCount = 0;
+let usedT = new Set(), usedD = new Set();
+let statT = 0, statD = 0, statSkip = 0;
+let newQType = 'truth';
+let panelTab = 'all';
+let customQs = [];
+let allTruths = [...TRUTHS_BASE];
+let allDares = [...DARES_BASE];
 
-function getGenderIcon(g) {
-  if (g === 'male') return '<i class="ti ti-gender-male" aria-hidden="true"></i>';
-  if (g === 'female') return '<i class="ti ti-gender-female" aria-hidden="true"></i>';
-  return '<i class="ti ti-gender-bigender" aria-hidden="true"></i>';
+async function loadStorage() {
+  try {
+    const r = await window.storage.get('tod_custom_qs');
+    if (r && r.value) {
+      customQs = JSON.parse(r.value);
+      customQs.forEach(q => {
+        if (q.type === 'truth') allTruths.push(q.text);
+        else allDares.push(q.text);
+      });
+    }
+  } catch(e) {}
 }
 
-function getInitials(name) {
-  return name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2) || '?';
+async function saveStorage() {
+  try {
+    await window.storage.set('tod_custom_qs', JSON.stringify(customQs));
+  } catch(e) {}
 }
 
-function addPlayer() {
-  playerCount++;
-  const id = 'p' + Date.now();
-  players.push({ id, name: '', gender: '' });
-  renderPlayers();
+function agreeRules() {
+  document.getElementById('modal-screen').style.display = 'none';
+  showScreen('screen-setup');
+  addPlayer();addPlayer();
 }
 
-function removePlayer(id) {
-  players = players.filter(p => p.id !== id);
-  renderPlayers();
-}
-
-function setGender(id, g) {
-  const p = players.find(x => x.id === id);
-  if (p) p.gender = g;
-  renderPlayers();
-}
-
-function updateName(id, val) {
-  const p = players.find(x => x.id === id);
-  if (p) p.name = val;
-  checkStart();
-}
-
-function checkStart() {
-  const valid = players.length >= 2 && players.every(p => p.name.trim().length > 0);
-  document.getElementById('start-btn').disabled = !valid;
-}
-
-function renderPlayers() {
-  const list = document.getElementById('players-list');
-  list.innerHTML = players.map((p, i) => `
-    <div class="player-row">
-      <input type="text" placeholder="Player ${i+1} name" value="${p.name}" oninput="updateName('${p.id}', this.value)" maxlength="20" />
-      <div class="gender-pills">
-        <button class="gender-pill male ${p.gender==='male'?'selected male':''}" onclick="setGender('${p.id}','male')"><i class="ti ti-gender-male" aria-hidden="true"></i></button>
-        <button class="gender-pill female ${p.gender==='female'?'selected female':''}" onclick="setGender('${p.id}','female')"><i class="ti ti-gender-female" aria-hidden="true"></i></button>
-        <button class="gender-pill nb ${p.gender==='nb'?'selected nb':''}" onclick="setGender('${p.id}','nb')"><i class="ti ti-gender-bigender" aria-hidden="true"></i></button>
-      </div>
-      ${players.length > 2 ? `<button class="remove-btn" onclick="removePlayer('${p.id}')" aria-label="Remove player"><i class="ti ti-x" aria-hidden="true"></i></button>` : ''}
-    </div>
-  `).join('');
-  checkStart();
-}
-
-function startGame() {
-  const valid = players.every(p => p.name.trim());
-  if (!valid || players.length < 2) return;
-  currentIdx = 0;
-  round = 1;
-  usedTruths = new Set();
-  usedDares = new Set();
-  showScreen('screen-game');
-  renderTurn();
+function declineRules() {
+  document.getElementById('modal-screen').innerHTML = '<div style="padding:40px;text-align:center;color:var(--color-text-secondary);font-size:16px">Maybe another time. Come back when you\'re ready.</div>';
 }
 
 function showScreen(id) {
@@ -241,67 +501,205 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 
-function renderTurn() {
-  const p = players[currentIdx];
-  const avatar = document.getElementById('player-avatar');
-  avatar.className = 'avatar ' + (p.gender || 'default');
-  avatar.textContent = getInitials(p.name);
-  document.getElementById('player-name').textContent = p.name;
-  document.getElementById('round-badge').textContent = 'Round ' + round;
-  document.getElementById('choice-row').style.display = 'grid';
-  document.getElementById('result-card').classList.remove('visible');
-  document.getElementById('next-btn').classList.remove('visible');
-  document.getElementById('skip-link').style.display = 'none';
+function getInitials(n) {
+  return n.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?';
+}
 
-  const strip = document.getElementById('players-strip');
-  strip.innerHTML = players.map((pl, i) => {
-    const dotClass = 'dot dot-' + (pl.gender || 'default');
-    return `<div class="player-chip ${i === currentIdx ? 'active' : ''}"><span class="${dotClass}"></span>${pl.name}</div>`;
+function addPlayer() {
+  const id = 'p'+Date.now()+Math.random();
+  players.push({id,name:'',gender:''});
+  renderSetup();
+}
+
+function removePlayer(id) {
+  if (players.length <= 2) return;
+  players = players.filter(p=>p.id!==id);
+  renderSetup();
+}
+
+function setGender(id, g) {
+  const p = players.find(x=>x.id===id);
+  if(p) p.gender=g;
+  renderSetup();
+}
+
+function updateName(id, v) {
+  const p = players.find(x=>x.id===id);
+  if(p) p.name=v;
+  checkPlayBtn();
+}
+
+function checkPlayBtn() {
+  const ok = players.length>=2 && players.every(p=>p.name.trim().length>0);
+  document.getElementById('play-btn').disabled=!ok;
+}
+
+function renderSetup() {
+  const list = document.getElementById('players-list');
+  list.innerHTML = players.map((p,i)=>{
+    const avClass = p.gender==='female'?'av-f':p.gender==='male'?'av-m':p.gender==='nb'?'av-nb':'av-d';
+    const init = p.name?getInitials(p.name):(i+1)+'';
+    return `<div class="player-card">
+      <div class="player-card-top">
+        <div class="p-avatar ${avClass}">${init}</div>
+        <input class="p-name-input" type="text" placeholder="Player ${i+1} name" value="${p.name}" oninput="updateName('${p.id}',this.value)" maxlength="20" />
+        ${players.length>2?`<button class="del-btn" onclick="removePlayer('${p.id}')" aria-label="Remove"><i class="ti ti-x" style="font-size:16px" aria-hidden="true"></i></button>`:''}
+      </div>
+      <div class="gender-row">
+        <button class="g-pill ${p.gender==='female'?'sel-f':''}" onclick="setGender('${p.id}','female')"><i class="ti ti-gender-female" style="font-size:14px;vertical-align:-2px" aria-hidden="true"></i> She/Her</button>
+        <button class="g-pill ${p.gender==='male'?'sel-m':''}" onclick="setGender('${p.id}','male')"><i class="ti ti-gender-male" style="font-size:14px;vertical-align:-2px" aria-hidden="true"></i> He/Him</button>
+        <button class="g-pill ${p.gender==='nb'?'sel-nb':''}" onclick="setGender('${p.id}','nb')"><i class="ti ti-gender-bigender" style="font-size:14px;vertical-align:-2px" aria-hidden="true"></i> They</button>
+      </div>
+    </div>`;
   }).join('');
+  checkPlayBtn();
 }
 
-function pick(type) {
-  document.getElementById('choice-row').style.display = 'none';
-  const pool = type === 'truth' ? TRUTHS : DARES;
-  const used = type === 'truth' ? usedTruths : usedDares;
-  if (used.size >= pool.length) used.clear();
-  let idx;
-  do { idx = Math.floor(Math.random() * pool.length); } while (used.has(idx));
-  used.add(idx);
-
-  const card = document.getElementById('result-card');
-  const typeEl = document.getElementById('result-type');
-  const numEl = document.getElementById('result-number');
-  const textEl = document.getElementById('result-text');
-
-  if (type === 'truth') {
-    typeEl.className = 'result-type truth';
-    typeEl.innerHTML = `<i class="ti ti-message-circle-question" aria-hidden="true"></i><span>Truth</span><span class="result-number">#${idx+1}</span>`;
-  } else {
-    typeEl.className = 'result-type dare';
-    typeEl.innerHTML = `<i class="ti ti-flame" aria-hidden="true"></i><span>Dare</span><span class="result-number">#${idx+1}</span>`;
-  }
-  textEl.textContent = pool[idx];
-  card.classList.add('visible', 'spin-anim');
-  setTimeout(() => card.classList.remove('spin-anim'), 400);
-
-  document.getElementById('next-btn').classList.add('visible');
-  document.getElementById('skip-link').style.display = 'block';
-}
-
-function nextTurn() {
-  currentIdx = (currentIdx + 1) % players.length;
-  if (currentIdx === 0) round++;
-  if (round > 10) { showScreen('screen-end'); return; }
+function startGame() {
+  currentIdx=0;round=1;usedT.clear();usedD.clear();statT=0;statD=0;statSkip=0;
+  showScreen('screen-game');
   renderTurn();
 }
 
-function restartGame() {
-  players = [{ id: 'p1', name: '', gender: '' }, { id: 'p2', name: '', gender: '' }];
-  renderPlayers();
-  showScreen('screen-setup');
+function renderTurn() {
+  const p = players[currentIdx];
+  document.getElementById('round-pill').textContent = `Round ${round} of 100`;
+  const avClass = p.gender==='female'?'av-f':p.gender==='male'?'av-m':p.gender==='nb'?'av-nb':'av-d';
+  const av = document.getElementById('hero-av');
+  av.className = 'hero-avatar '+avClass;
+  av.textContent = getInitials(p.name);
+  document.getElementById('hero-name').textContent = p.name;
+  document.getElementById('choice-grid').style.display='grid';
+  document.getElementById('result-wrap').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('skip-txt').style.display='none';
+  const scroll = document.getElementById('players-scroll');
+  scroll.innerHTML = players.map((pl,i)=>{
+    const dc = 'dot-'+(pl.gender||'d');
+    return `<div class="p-chip ${i===currentIdx?'cur':''}"><span class="chip-dot ${dc}"></span>${pl.name}</div>`;
+  }).join('');
 }
 
-players = [{ id: 'p1', name: '', gender: '' }, { id: 'p2', name: '', gender: '' }];
-renderPlayers();
+function getRandom(pool, used) {
+  if(used.size>=pool.length) used.clear();
+  let idx;
+  let attempts=0;
+  do { idx=Math.floor(Math.random()*pool.length); attempts++; } while(used.has(idx) && attempts<pool.length*2);
+  used.add(idx);
+  return {text:pool[idx],num:idx+1};
+}
+
+function pick(type) {
+  document.getElementById('choice-grid').style.display='none';
+  const pool = type==='truth'?allTruths:allDares;
+  const used = type==='truth'?usedT:usedD;
+  const r = getRandom(pool,used);
+  if(type==='truth') statT++; else statD++;
+  const rw = document.getElementById('result-wrap');
+  const rtag = document.getElementById('rtag');
+  if(type==='truth'){
+    rtag.className='rtag-pill rtag-truth';
+    rtag.innerHTML='<i class="ti ti-message-circle-question" style="font-size:14px" aria-hidden="true"></i> Truth';
+  } else {
+    rtag.className='rtag-pill rtag-dare';
+    rtag.innerHTML='<i class="ti ti-flame" style="font-size:14px" aria-hidden="true"></i> Dare';
+  }
+  document.getElementById('rtag-num').textContent='#'+r.num;
+  document.getElementById('result-q').textContent=r.text;
+  rw.style.display='block';
+  rw.classList.remove('pop');
+  void rw.offsetWidth;
+  rw.classList.add('pop');
+  document.getElementById('next-btn').style.display='flex';
+  document.getElementById('skip-txt').style.display='block';
+}
+
+function nextTurn() {
+  if(document.getElementById('skip-txt').style.display!=='none' && document.getElementById('result-wrap').style.display==='none') statSkip++;
+  currentIdx=(currentIdx+1)%players.length;
+  if(currentIdx===0) round++;
+  if(round>100){showEnd();return;}
+  renderTurn();
+}
+
+function showEnd() {
+  document.getElementById('stat-truths').textContent=statT;
+  document.getElementById('stat-dares').textContent=statD;
+  document.getElementById('stat-skips').textContent=statSkip;
+  document.getElementById('stat-rounds').textContent=100;
+  showScreen('screen-end');
+}
+
+function replayGame(){startGame();}
+function newGame(){players=[];addPlayer();addPlayer();showScreen('screen-setup');}
+
+function showPanel() {
+  panelTab='all';
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('act'));
+  document.getElementById('ptab-all').classList.add('act');
+  renderQList();
+  showScreen('screen-panel');
+}
+
+function hidePanel(){showScreen('screen-game');}
+
+function setTab(t) {
+  panelTab=t;
+  document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('act'));
+  document.getElementById('ptab-'+t).classList.add('act');
+  renderQList();
+}
+
+function renderQList() {
+  const list = document.getElementById('q-list');
+  let items = [];
+  if(panelTab==='all'||panelTab==='truth') {
+    TRUTHS_BASE.forEach((q,i)=>items.push({text:q,type:'truth',custom:false,idx:i}));
+  }
+  if(panelTab==='all'||panelTab==='dare') {
+    DARES_BASE.forEach((q,i)=>items.push({text:q,type:'dare',custom:false,idx:i}));
+  }
+  if(panelTab==='all'||panelTab==='custom'||panelTab==='truth'||panelTab==='dare') {
+    customQs.forEach((q,i)=>{
+      if(panelTab==='all'||panelTab==='custom'||(panelTab==='truth'&&q.type==='truth')||(panelTab==='dare'&&q.type==='dare'))
+        items.push({text:q.text,type:q.type,custom:true,cidx:i});
+    });
+  }
+  list.innerHTML = items.slice(0,60).map(item=>{
+    const badge = item.custom?`<span class="q-badge q-badge-c">custom</span>`:(item.type==='truth'?`<span class="q-badge q-badge-t">truth</span>`:`<span class="q-badge q-badge-d">dare</span>`);
+    const del = item.custom?`<button class="q-del" onclick="deleteCustomQ(${item.cidx})" aria-label="Delete"><i class="ti ti-trash" style="font-size:14px" aria-hidden="true"></i></button>`:'';
+    return `<div class="q-item">${badge}<span style="flex:1">${item.text}</span>${del}</div>`;
+  }).join('');
+  if(items.length>60) list.innerHTML+=`<div style="text-align:center;font-size:12px;color:var(--color-text-tertiary);padding:8px">+${items.length-60} more questions in the pool</div>`;
+}
+
+function selectType(t) {
+  newQType=t;
+  document.getElementById('type-truth').className='type-opt'+(t==='truth'?' sel-t':'');
+  document.getElementById('type-dare').className='type-opt'+(t==='dare'?' sel-d':'');
+}
+
+async function saveCustomQ() {
+  const txt = document.getElementById('new-q-text').value.trim();
+  if(!txt) return;
+  const q = {text:txt,type:newQType};
+  customQs.push(q);
+  if(newQType==='truth') allTruths.push(txt);
+  else allDares.push(txt);
+  document.getElementById('new-q-text').value='';
+  await saveStorage();
+  renderQList();
+}
+
+async function deleteCustomQ(cidx) {
+  const q = customQs[cidx];
+  if(q.type==='truth') { const i=allTruths.indexOf(q.text); if(i>-1) allTruths.splice(i,1); }
+  else { const i=allDares.indexOf(q.text); if(i>-1) allDares.splice(i,1); }
+  customQs.splice(cidx,1);
+  await saveStorage();
+  renderQList();
+}
+
+selectType('truth');
+loadStorage();
 </script>
